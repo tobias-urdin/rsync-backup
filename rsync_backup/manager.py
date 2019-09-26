@@ -21,7 +21,6 @@ from rsync_backup.job import Job, backup_job
 from rsync_backup.rsync import get_rsync_command
 import os
 from timeit import default_timer as timer
-import uuid
 
 
 LOG = logging.getLogger(__name__)
@@ -105,9 +104,10 @@ class Manager(object):
             LOG.info('adding job %s %s -> %s to queue' % (
                      job.id, job.source, job.destination))
 
-            rsync_command = get_rsync_command(self.rsync_path,
-                job.source, job.destination, job.exclusions,
-                options=job.options)
+            rsync_command = get_rsync_command(
+                self.rsync_path, job.source, job.destination,
+                job.exclusions, options=job.options)
+
             LOG.debug('job %s rsync command: %s' % (
                       job.id, ' '.join(rsync_command)))
 

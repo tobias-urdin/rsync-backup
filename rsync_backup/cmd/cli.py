@@ -43,8 +43,9 @@ def main():
     parser.add_argument('-w', '--workers', type=int,
                         help='override amount of workers')
     parser.add_argument('-a', '--allowed-returncodes',
-                        type=int, nargs='+', help=('allowed return '
-                        'codes, separate by spaces for multiple'))
+                        type=int, nargs='+',
+                        help=('allowed return codes, separate by '
+                              'spaces for multiple'))
 
     args = parser.parse_args()
 
@@ -131,8 +132,8 @@ def main():
 
         if ready is False:
             LOG.error('job %s was never completed due '
-                      'to unknown error (%i mins or %i secs)' % (
-                      job_id, mins, secs))
+                      'to unknown error (%i mins or %i secs)' %
+                      (job_id, mins, secs))
             failed_count += 1
             return_value = 1
             continue
@@ -145,8 +146,8 @@ def main():
             log_method = LOG.info
             result_str = 'was successful'
 
-            if (allowed_returncodes is not None and
-                job_ret not in allowed_returncodes):
+            if (allowed_returncodes is not None and job_ret not
+                    in allowed_returncodes):
                 log_method = LOG.error
                 result_str = 'failed'
                 failed_count += 1
@@ -154,8 +155,8 @@ def main():
                 success_count += 1
 
             log_method('job %s %s with return code: %i '
-                       '(%i mins or %i secs)' % (
-                       job_id, result_str, job_ret, mins, secs))
+                       '(%i mins or %i secs)' %
+                       (job_id, result_str, job_ret, mins, secs))
         else:
             try:
                 job_ret = six.text_type(result.get())
@@ -163,8 +164,9 @@ def main():
                 job_ret = six.text_type(exc)
 
             LOG.error('job %s was not completed due to '
-                      'error: %s (%i mins or %i secs)' % (
-                      job_id, job_ret, mins, secs))
+                      'error: %s (%i mins or %i secs)' %
+                      (job_id, job_ret, mins, secs))
+
             return_value = 1
             failed_count += 1
 

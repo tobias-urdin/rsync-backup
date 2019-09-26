@@ -46,8 +46,9 @@ def get_exclusions(exclusions=[]):
     result = []
 
     for exclude in exclusions:
-        if (exclude.startswith('--exclude ') or
-            exclude.startswith('--exclude=')):
+        exclude_contains = (exclude.startswith('--exclude') or # noqa
+                            exclude.startswith('--exclude=')) # noqa
+        if exclude_contains:
             result.append(exclude)
         else:
             excl = '--exclude={}'.format(exclude)
@@ -72,9 +73,9 @@ def get_rsync_command(rsync_path, source, destination, exclusions=[],
 
 def run_rsync(rsync_path, source, destination, exclusions=[],
               sync_source_contents=True, options=[]):
-    rsync_command = get_rsync_command(rsync_path, source, destination,
-                                     exclusions, sync_source_contents,
-                                     options)
+    rsync_command = get_rsync_command(
+        rsync_path, source, destination, exclusions,
+        sync_source_contents, options)
 
     ret_code = 0
 

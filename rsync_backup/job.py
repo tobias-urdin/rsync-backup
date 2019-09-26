@@ -65,28 +65,33 @@ class Job(object):
         previous_dest = self.parent_destination
 
         for part in os.path.splitdrive(parent_dst_diff):
-             part_path = os.path.join(previous_dest, part)
+            part_path = os.path.join(previous_dest, part)
 
-             if not os.path.isdir(part_path):
-                 source_part = os.path.join(self.parent_source, part)
+            if not os.path.isdir(part_path):
+                source_part = os.path.join(self.parent_source, part)
 
-                 if not os.path.isdir(source_part):
-                     LOG.error('cannot create destination %s because source %s does '
-                               'not exist' % (part_path, source_part))
-                     sys.exit(1)
+                if not os.path.isdir(source_part):
+                    LOG.error('cannot create destination %s because '
+                              'source %s does not exist' %
+                              (part_path, source_part))
+                    sys.exit(1)
 
-                 source_part_stat = os.stat(source_part)
+                source_part_stat = os.stat(source_part)
 
-                 LOG.info('this run will create destination dir: {} with owner {} '
-                          'group: {} and mode: {:o}'.format(part_path, source_part_stat.st_uid,
-                          source_part_stat.st_gid, source_part_stat.st_mode))
+                LOG.info('this run will create destination dir: {} '
+                         'with owner {} group: {} and '
+                         'mode: {:o}'.format(
+                             part_path, source_part_stat.st_uid,
+                             source_part_stat.st_gid,
+                             source_part_stat.st_mode))
 
-                 new_dest_path = DestinationPath(part_path, source_part_stat.st_uid,
-                                                 source_part_stat.st_gid,
-                                                 source_part_stat.st_mode)
-                 self.destination_paths.append(new_dest_path)
+                new_dest_path = DestinationPath(part_path,
+                                                source_part_stat.st_uid,
+                                                source_part_stat.st_gid,
+                                                source_part_stat.st_mode)
+                self.destination_paths.append(new_dest_path)
 
-             previous_dest = part_path
+            previous_dest = part_path
 
     def prepare(self):
         if len(self.destination_paths) <= 0:
