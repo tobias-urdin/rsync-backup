@@ -1,0 +1,4 @@
+pbr>=2.0 # Apache-2.0
+six>=1.12.0 # MIT
+voluptuous>=0.11.7 # BSD
+PyYAML>=5.1.2 # MIT

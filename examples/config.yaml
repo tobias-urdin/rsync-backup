@@ -1,0 +1,66 @@
+---
+# The default amount of workers to use.
+# This can be overriden when running rsync-backup by
+# using the --workers argument.
+workers: 1
+
+jobs:
+  # This will sync /some/source directory into /some/destination
+  # like any normal operation.
+  - source: /some/source
+    destination: /some/destination
+    exclusions: []
+    options:
+      - '-a'
+    step: 0
+    # The default behaviour is that a run must return 0.
+    # This allows either 0 or 125 to be considered
+    # successful return codes from rsync.
+    allowed_returncodes:
+      - 0
+      - 125
+
+  # If source contains subdirectories like this:
+  # /some/source
+  #   /some/source/dir1
+  #   /some/source/dir2
+  # This will spawn two jobs for each subdirectory
+  # by stepping inside the source directory:
+  # /some/source/dir1 -> /some/destination/dir1
+  # /some/source/dir2 -> /some/destination/dir2
+  - source: /some/source
+    destination: /some/destination
+    exclusions: []
+    options:
+      - '-a'
+    step: 1
+
+  # This is the same as above but we go even one step further.
+  # If the source looks like this:
+  # /some/source
+  #   /some/source/dir1
+  #     /some/source/dir1/mydir1
+  #   /some/source/dir2
+  #     /some/source/dir1/mydir2
+  # This would generate jobs like this:
+  # /some/source/dir1/mydir1 -> /some/destination/dir1/mydir1
+  # /some/source/dir2/mydir2 -> /some/destination/dir2/mydir2
+  - source: /some/source
+    destination: /some/destination
+    exclusions: []
+    options:
+      - '-a'
+    step: 2
+
+  # If you wanted to add exclusions you do something like this.
+  # Note that this example exclusion would exclude any .snapshots
+  # directory found in any directory, including subdirectories.
+  # If you wanted to only exclude /some/source/.snapshots that would
+  # instead be defined as '/.snapshots/' like any normal rsync operation.
+  - source: /some/source
+    destination: /some/destination
+    exclusions:
+      - '.snapshots/'
+    options:
+      - '-a'
+    step: 0
