@@ -20,6 +20,7 @@ import os
 import uuid
 import sys
 import six
+from timeit import default_timer as timer
 
 
 LOG = logging.getLogger(__name__)
@@ -62,13 +63,19 @@ class Job(object):
 
         parent_dst_diff = os.path.relpath(self.destination,
                                           self.parent_destination)
-        previous_dest = self.parent_destination
+        normalized_dst_diff = os.path.normpath(parent_dst_diff)
 
-        for part in os.path.splitdrive(parent_dst_diff):
+        all_parts = normalized_dst_diff.split(os.sep)
+
+        previous_dest = self.parent_destination
+        previous_src = self.parent_source
+
+        for part in all_parts:
             part_path = os.path.join(previous_dest, part)
 
             if not os.path.isdir(part_path):
-                source_part = os.path.join(self.parent_source, part)
+                source_part = os.path.join(previous_src, part)
+                LOG.debug('source_part is %s' % source_part)
 
                 if not os.path.isdir(source_part):
                     LOG.error('cannot create destination %s because '
@@ -89,6 +96,14 @@ class Job(object):
                                                 source_part_stat.st_uid,
                                                 source_part_stat.st_gid,
                                                 source_part_stat.st_mode)
+
+                LOG.debug('adding destination path %s (uid: %i gid: %i '
+                          ' mode: %i) for creation' % (
+                          part_path, source_part_stat.st_uid,
+                          source_part_stat.st_gid,
+                          source_part_stat.st_mode))
+
+                previous_src = os.path.join(previous_src, part)
                 self.destination_paths.append(new_dest_path)
 
             previous_dest = part_path
@@ -107,6 +122,8 @@ class Job(object):
 
 
 def backup_job(rsync_path, source, dest, exclusions, options):
+    start = timer()
     result = run_rsync(rsync_path, source, dest, exclusions,
                        options=options)
-    return result
+    end = timer()
+    return result, (end - start)

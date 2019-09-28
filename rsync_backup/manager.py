@@ -120,11 +120,7 @@ class Manager(object):
             args = (self.rsync_path, job.source, job.destination,
                     job.exclusions, job.options)
             res = self.pool.apply_async(backup_job, args=args)
-            job_data = {
-                'start': timer(),
-                'result': res
-            }
-            results[job.id] = job_data
+            results[job.id] = res
 
         self.pool.close()
         return results

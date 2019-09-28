@@ -111,29 +111,18 @@ def main():
 
     return_value = 0
 
-    # process time first
-    for job_id in jobs:
-        job_data = jobs[job_id]
-        job_data['end'] = timer()
-
     success_count = 0
     failed_count = 0
 
     # now results
     for job_id in jobs:
-        job_data = jobs[job_id]
-
-        secs = job_data['end'] - job_data['start']
-        mins = secs / 60
-
-        result = job_data['result']
-
+        result = jobs[job_id]
         ready = result.ready()
 
         if ready is False:
             LOG.error('job %s was never completed due '
-                      'to unknown error (%i mins or %i secs)' %
-                      (job_id, mins, secs))
+                      'to unknown error' % job_id)
+
             failed_count += 1
             return_value = 1
             continue
@@ -141,7 +130,8 @@ def main():
         success = result.successful()
 
         if success:
-            job_ret = result.get()
+            job_ret, job_secs = result.get()
+            job_mins = job_secs / 60
 
             log_method = LOG.info
             result_str = 'was successful'
@@ -156,16 +146,20 @@ def main():
 
             log_method('job %s %s with return code: %i '
                        '(%i mins or %i secs)' %
-                       (job_id, result_str, job_ret, mins, secs))
+                       (job_id, result_str, job_ret, job_mins,
+                        job_secs))
         else:
             try:
-                job_ret = six.text_type(result.get())
+                job_ret, job_secs = result.get()
             except Exception as exc:
                 job_ret = six.text_type(exc)
+                job_secs = 0
+
+            job_mins = job_secs / 60
 
             LOG.error('job %s was not completed due to '
                       'error: %s (%i mins or %i secs)' %
-                      (job_id, job_ret, mins, secs))
+                      (job_id, job_ret, job_mins, job_secs))
 
             return_value = 1
             failed_count += 1
