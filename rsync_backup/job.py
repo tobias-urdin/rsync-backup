@@ -98,10 +98,10 @@ class Job(object):
                                                 source_part_stat.st_mode)
 
                 LOG.debug('adding destination path %s (uid: %i gid: %i '
-                          ' mode: %i) for creation' % (
-                          part_path, source_part_stat.st_uid,
-                          source_part_stat.st_gid,
-                          source_part_stat.st_mode))
+                          ' mode: %i) for creation' %
+                          (part_path, source_part_stat.st_uid,
+                           source_part_stat.st_gid,
+                           source_part_stat.st_mode))
 
                 previous_src = os.path.join(previous_src, part)
                 self.destination_paths.append(new_dest_path)

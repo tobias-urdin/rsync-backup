@@ -20,7 +20,6 @@ import multiprocessing
 from rsync_backup.job import Job, backup_job
 from rsync_backup.rsync import get_rsync_command
 import os
-from timeit import default_timer as timer
 
 
 LOG = logging.getLogger(__name__)

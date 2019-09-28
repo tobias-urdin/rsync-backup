@@ -40,6 +40,9 @@ def main():
                         help='append main run output to a log file')
     parser.add_argument('-n', '--noop', action='store_true',
                         help='only show what would have been done')
+    parser.add_argument('-t', '--toplist', type=int, default=5,
+                        help='show a toplist with this amount of '
+                        'jobs that has the longest run time')
     parser.add_argument('-w', '--workers', type=int,
                         help='override amount of workers')
     parser.add_argument('-a', '--allowed-returncodes',
@@ -109,6 +112,7 @@ def main():
 
     mgr.wait()
 
+    toplist = {}
     return_value = 0
 
     success_count = 0
@@ -142,6 +146,7 @@ def main():
                 result_str = 'failed'
                 failed_count += 1
             else:
+                toplist[job_id] = int(job_secs)
                 success_count += 1
 
             log_method('job %s %s with return code: %i '
@@ -163,6 +168,17 @@ def main():
 
             return_value = 1
             failed_count += 1
+
+    if args.toplist is not None:
+        count = 1
+        for top in sorted(toplist, key=toplist.get, reverse=True):
+            val = toplist[top]
+            val_mins = val / 60
+            LOG.info('Top %i job %s in %i mins (%i seconds)' % (
+                     count, top, val_mins, val))
+            if count == args.toplist:
+                break
+            count += 1
 
     total_secs = timer() - start
     total_mins = total_secs / 60
