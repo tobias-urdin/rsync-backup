@@ -12,7 +12,7 @@ jobs:
     exclusions: []
     options:
       - '-a'
-    step: 0
+    steps: 0
     # The default behaviour is that a run must return 0.
     # This allows either 0 or 125 to be considered
     # successful return codes from rsync.
@@ -33,7 +33,7 @@ jobs:
     exclusions: []
     options:
       - '-a'
-    step: 1
+    steps: 1
 
   # This is the same as above but we go even one step further.
   # If the source looks like this:
@@ -50,7 +50,7 @@ jobs:
     exclusions: []
     options:
       - '-a'
-    step: 2
+    steps: 2
 
   # If you wanted to add exclusions you do something like this.
   # Note that this example exclusion would exclude any .snapshots
@@ -63,4 +63,4 @@ jobs:
       - '.snapshots/'
     options:
       - '-a'
-    step: 0
+    steps: 0
