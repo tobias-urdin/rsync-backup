@@ -7,8 +7,10 @@ workers: 1
 jobs:
   # This will sync /some/source directory into /some/destination
   # like any normal operation.
-  - source: /some/source
-    destination: /some/destination
+  - source:
+      path: /some/source
+    destination:
+      path: /some/destination
     exclusions: []
     options:
       - '-a'
@@ -28,8 +30,12 @@ jobs:
   # by stepping inside the source directory:
   # /some/source/dir1 -> /some/destination/dir1
   # /some/source/dir2 -> /some/destination/dir2
-  - source: /some/source
-    destination: /some/destination
+  - source:
+      path: /some/source
+      mount: no
+    destination:
+      path: /some/destination
+      mount: no
     exclusions: []
     options:
       - '-a'
@@ -45,8 +51,12 @@ jobs:
   # This would generate jobs like this:
   # /some/source/dir1/mydir1 -> /some/destination/dir1/mydir1
   # /some/source/dir2/mydir2 -> /some/destination/dir2/mydir2
-  - source: /some/source
-    destination: /some/destination
+  - source:
+      path: /some/source
+      mount: no
+    destination:
+      path: /some/destination
+      mount: yes
     exclusions: []
     options:
       - '-a'
@@ -57,8 +67,12 @@ jobs:
   # directory found in any directory, including subdirectories.
   # If you wanted to only exclude /some/source/.snapshots that would
   # instead be defined as '/.snapshots/' like any normal rsync operation.
-  - source: /some/source
-    destination: /some/destination
+  - source:
+      path: /some/source
+      mount: yes
+    destination:
+      path: /some/destination
+      mount: yes
     exclusions:
       - '.snapshots/'
     options:

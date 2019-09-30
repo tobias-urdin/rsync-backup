@@ -35,12 +35,29 @@ def validate_steps(value):
     return value
 
 
-def validate_abs_path(value):
-    if not os.path.isdir(value):
-        raise Invalid('%s must be a existing directory' % value)
+def validate_path(value):
+    if not isinstance(value, dict):
+        raise Invalid('must be a dict')
 
-    if not os.path.isabs(value):
-        raise Invalid('%s must be a absolute path' % value)
+    if 'path' not in value:
+        raise Invalid('dict must contain path')
+
+    path = value.get('path')
+
+    if not os.path.isdir(path):
+        raise Invalid('%s must be a existing directory' % path)
+
+    if not os.path.isabs(path):
+        raise Invalid('%s must be a absolute path' % path)
+
+    if 'mount' in value:
+        mount = value.get('mount')
+
+        if not isinstance(mount, bool):
+            raise Invalid('mount must be a boolean')
+
+        if mount and not os.path.ismount(path):
+            raise Invalid('%s must be a mount' % path)
 
     return value
 
@@ -93,8 +110,8 @@ def validate_workers(value):
 
 
 job_schema = Schema({
-    'source': validate_abs_path,
-    'destination': validate_abs_path,
+    'source': validate_path,
+    'destination': validate_path,
     'exclusions': validate_exclusions,
     'options': validate_options,
     'steps': validate_steps,

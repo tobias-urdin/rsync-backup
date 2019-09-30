@@ -32,8 +32,10 @@ class Manager(object):
         self.queue = []
 
     def _process_steps(self, job):
-        src = job.get('source')
-        dst = job.get('destination')
+        src_dict = job.get('source')
+        src = src_dict['path']
+        dst_dict = job.get('destination')
+        dst = dst_dict['path']
 
         steps = job.get('steps')
 
@@ -88,6 +90,12 @@ class Manager(object):
                 exploded_jobs += self._process_steps(j)
             else:
                 j['exploded'] = False
+
+                src_dict = j['source']
+                dst_dict = j['destination']
+                j['source'] = src_dict['path']
+                j['destination'] = dst_dict['path']
+
                 exploded_jobs.append(j)
 
         return exploded_jobs
