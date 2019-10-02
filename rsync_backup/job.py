@@ -72,11 +72,10 @@ class Job(object):
 
         for part in all_parts:
             part_path = os.path.join(previous_dest, part)
+            source_part = os.path.join(previous_src, part)
+            LOG.debug('source_part is %s' % source_part)
 
             if not os.path.isdir(part_path):
-                source_part = os.path.join(previous_src, part)
-                LOG.debug('source_part is %s' % source_part)
-
                 if not os.path.isdir(source_part):
                     LOG.error('cannot create destination %s because '
                               'source %s does not exist' %
@@ -103,9 +102,9 @@ class Job(object):
                            source_part_stat.st_gid,
                            source_part_stat.st_mode))
 
-                previous_src = os.path.join(previous_src, part)
                 self.destination_paths.append(new_dest_path)
 
+            previous_src = source_part
             previous_dest = part_path
 
     def prepare(self):
